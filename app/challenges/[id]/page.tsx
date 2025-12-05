@@ -9,6 +9,7 @@ import { DeleteChallengeButton } from '@/components/challenges/DeleteChallengeBu
 import { calculateLeaderboard } from '@/lib/leaderboard'
 import { format } from 'date-fns'
 import { fr } from 'date-fns/locale'
+import { Profile } from '@/types'
 
 interface ChallengePageProps {
   params: Promise<{
@@ -58,13 +59,24 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
   }
 
   // Récupérer tous les membres du défi avec leurs profils
-  const { data: members } = await supabase
+  const { data: rawMembers } = await supabase
     .from('challenge_members')
-    .select('user_id, profiles(*)')
+    .select('user_id, profiles!inner(*)')
     .eq('challenge_id', id)
 
+  // Transformer les données pour matcher le type attendu
+  interface MemberWithProfile {
+    user_id: string
+    profiles: Profile
+  }
+
+  const members: MemberWithProfile[] = rawMembers?.map(m => ({
+    user_id: m.user_id,
+    profiles: (Array.isArray(m.profiles) ? m.profiles[0] : m.profiles) as Profile
+  })) || []
+
   // Récupérer toutes les activités des membres dans la période du défi
-  const memberIds = members?.map(m => m.user_id) || []
+  const memberIds = members.map(m => m.user_id)
 
   const { data: activities } = await supabase
     .from('activity_snapshots')
@@ -80,7 +92,7 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
   // Calculer le leaderboard
   const leaderboardData = calculateLeaderboard(
     challenge,
-    members || [],
+    members as Array<{ user_id: string; profiles: Profile }>,
     activities || []
   )
 
