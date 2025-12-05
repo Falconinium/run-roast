@@ -87,50 +87,52 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
   const isOwner = challenge.owner_id === user.id
 
   return (
-    <Container maxWidth="lg" className="py-8">
-      <div className="space-y-6">
+    <Container maxWidth="lg" className="py-4 sm:py-8">
+      <div className="space-y-4 sm:space-y-6 px-4 sm:px-0">
         {/* Bouton retour */}
         <Link href="/dashboard" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          <span>Retour au dashboard</span>
+          <span className="text-sm sm:text-base">Retour au dashboard</span>
         </Link>
 
         {/* En-tête du défi */}
         <Card>
-          <CardHeader>
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <CardTitle className="text-3xl">{challenge.title}</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              <div className="flex-1 min-w-0">
+                <CardTitle className="text-2xl sm:text-3xl break-words">{challenge.title}</CardTitle>
                 {challenge.description && (
-                  <p className="text-gray-600 mt-2">{challenge.description}</p>
+                  <p className="text-gray-600 mt-2 text-sm sm:text-base">{challenge.description}</p>
                 )}
               </div>
               {isOwner && (
-                <DeleteChallengeButton challengeId={challenge.id} />
+                <div className="flex-shrink-0">
+                  <DeleteChallengeButton challengeId={challenge.id} />
+                </div>
               )}
             </div>
           </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-4 gap-4">
+          <CardContent className="p-4 sm:p-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div>
-                <span className="text-sm text-gray-500">Sport</span>
-                <p className="font-medium capitalize">{challenge.sport}</p>
+                <span className="text-xs sm:text-sm text-gray-500">Sport</span>
+                <p className="font-medium capitalize text-sm sm:text-base">{challenge.sport}</p>
               </div>
               <div>
-                <span className="text-sm text-gray-500">Métrique</span>
-                <p className="font-medium capitalize">{challenge.metric}</p>
+                <span className="text-xs sm:text-sm text-gray-500">Métrique</span>
+                <p className="font-medium capitalize text-sm sm:text-base">{challenge.metric}</p>
               </div>
               <div>
-                <span className="text-sm text-gray-500">Début</span>
-                <p className="font-medium">
+                <span className="text-xs sm:text-sm text-gray-500">Début</span>
+                <p className="font-medium text-sm sm:text-base">
                   {format(new Date(challenge.start_date), 'dd MMM yyyy', { locale: fr })}
                 </p>
               </div>
               <div>
-                <span className="text-sm text-gray-500">Fin</span>
-                <p className="font-medium">
+                <span className="text-xs sm:text-sm text-gray-500">Fin</span>
+                <p className="font-medium text-sm sm:text-base">
                   {format(new Date(challenge.end_date), 'dd MMM yyyy', { locale: fr })}
                 </p>
               </div>
@@ -160,26 +162,26 @@ export default async function ChallengePage({ params }: ChallengePageProps) {
 
         {/* Participants */}
         <Card>
-          <CardHeader>
-            <CardTitle>Participants ({members?.length || 0})</CardTitle>
+          <CardHeader className="p-4 sm:p-6">
+            <CardTitle className="text-xl sm:text-2xl">Participants ({members?.length || 0})</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-4 sm:p-6">
             <div className="space-y-2">
               {members?.map((member) => (
                 <div
                   key={member.user_id}
-                  className="flex items-center justify-between py-2 border-b last:border-b-0"
+                  className="flex items-center justify-between py-3 border-b last:border-b-0 gap-2"
                 >
-                  <div>
-                    <p className="font-medium">
+                  <div className="min-w-0 flex-1">
+                    <p className="font-medium text-sm sm:text-base truncate">
                       {member.profiles.full_name || 'Athlète'}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-xs sm:text-sm text-gray-500 truncate">
                       {member.profiles.email}
                     </p>
                   </div>
                   {member.user_id === challenge.owner_id && (
-                    <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded">
+                    <span className="px-2 py-1 bg-orange-100 text-orange-700 text-xs rounded whitespace-nowrap flex-shrink-0">
                       Organisateur
                     </span>
                   )}

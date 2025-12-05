@@ -40,28 +40,28 @@ export function Leaderboard({ entries, metric, currentUserId, stravaConnections 
   const getRankBadge = (rank: number) => {
     if (rank === 1) {
       return (
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg">
-          <span className="text-white font-bold text-lg">1</span>
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-600 flex items-center justify-center shadow-lg">
+          <span className="text-white font-bold text-base sm:text-lg">1</span>
         </div>
       )
     }
     if (rank === 2) {
       return (
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center shadow-lg">
-          <span className="text-white font-bold text-lg">2</span>
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center shadow-lg">
+          <span className="text-white font-bold text-base sm:text-lg">2</span>
         </div>
       )
     }
     if (rank === 3) {
       return (
-        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-lg">
-          <span className="text-white font-bold text-lg">3</span>
+        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-lg">
+          <span className="text-white font-bold text-base sm:text-lg">3</span>
         </div>
       )
     }
     return (
-      <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-        <span className="text-gray-700 font-semibold">{rank}</span>
+      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center">
+        <span className="text-gray-700 font-semibold text-sm sm:text-base">{rank}</span>
       </div>
     )
   }
@@ -83,7 +83,7 @@ export function Leaderboard({ entries, metric, currentUserId, stravaConnections 
           <div
             key={entry.user_id}
             className={`
-              relative p-4 rounded-xl transition-all duration-300 hover:shadow-lg
+              relative p-3 sm:p-4 rounded-xl transition-all duration-300 hover:shadow-lg
               ${isCurrentUser
                 ? 'bg-gradient-to-r from-orange-50 to-orange-100 border-2 border-orange-300 shadow-md'
                 : 'bg-white border-2 border-gray-100'
@@ -91,14 +91,14 @@ export function Leaderboard({ entries, metric, currentUserId, stravaConnections 
               ${entry.rank <= 3 ? 'hover:scale-[1.02]' : ''}
             `}
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4">
               {/* Rank Badge */}
               <div className="flex-shrink-0">
                 {getRankBadge(entry.rank)}
               </div>
 
               {/* Profile Picture */}
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 hidden sm:block">
                 {stravaInfo?.athlete_profile_image ? (
                   <div className="relative w-12 h-12 rounded-full overflow-hidden ring-2 ring-gray-200">
                     <Image
@@ -117,26 +117,26 @@ export function Leaderboard({ entries, metric, currentUserId, stravaConnections 
 
               {/* Name and Email */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <p className="font-semibold text-gray-900 truncate">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <p className="font-semibold text-gray-900 truncate text-sm sm:text-base">
                     {stravaInfo?.athlete_firstname && stravaInfo?.athlete_lastname
                       ? `${stravaInfo.athlete_firstname} ${stravaInfo.athlete_lastname}`
                       : entry.full_name || 'Athlète'}
                   </p>
                   {isCurrentUser && (
-                    <span className="px-2 py-0.5 bg-orange-500 text-white text-xs rounded-full font-semibold">
+                    <span className="px-2 py-0.5 bg-orange-500 text-white text-xs rounded-full font-semibold whitespace-nowrap">
                       Vous
                     </span>
                   )}
                   {entry.rank <= 3 && (
-                    <span className="text-lg">
+                    <span className="text-base sm:text-lg">
                       {entry.rank === 1 && '🥇'}
                       {entry.rank === 2 && '🥈'}
                       {entry.rank === 3 && '🥉'}
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-gray-500 truncate">{entry.email}</p>
+                <p className="text-xs text-gray-500 truncate hidden sm:block">{entry.email}</p>
 
                 {/* Progress Bar */}
                 <div className="mt-2 w-full bg-gray-200 rounded-full h-2 overflow-hidden">
@@ -149,10 +149,10 @@ export function Leaderboard({ entries, metric, currentUserId, stravaConnections 
 
               {/* Stats */}
               <div className="flex-shrink-0 text-right space-y-1">
-                <div className="text-2xl font-bold text-orange-600">
+                <div className="text-lg sm:text-2xl font-bold text-orange-600 whitespace-nowrap">
                   {formatScore(entry, metric as MetricType)}
                 </div>
-                <div className="flex gap-3 text-xs text-gray-600">
+                <div className="hidden sm:flex gap-3 text-xs text-gray-600">
                   <div>
                     <div className="font-semibold">{formatDistance(entry.total_distance)}</div>
                     <div className="text-gray-400">distance</div>

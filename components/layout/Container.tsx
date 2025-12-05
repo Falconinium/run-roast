@@ -17,7 +17,7 @@ export function Container({ children, className = '', maxWidth = 'xl' }: Contain
   }
 
   return (
-    <div className={`mx-auto px-4 ${maxWidthClasses[maxWidth]} ${className}`}>
+    <div className={`mx-auto px-4 sm:px-6 md:px-8 ${maxWidthClasses[maxWidth]} ${className}`}>
       {children}
     </div>
   )

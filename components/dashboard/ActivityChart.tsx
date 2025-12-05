@@ -16,9 +16,11 @@ export function ActivityChart({ userId }: ActivityChartProps) {
     async function fetchData() {
       const supabase = createClient()
 
-      // Get activities from the last 30 days
-      const thirtyDaysAgo = new Date()
-      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
+      // Calculate the date range for the last 30 days in local timezone
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      const thirtyDaysAgo = new Date(today)
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29) // -29 to include today as day 30
 
       const { data: activities } = await supabase
         .from('activity_snapshots')
@@ -35,28 +37,38 @@ export function ActivityChart({ userId }: ActivityChartProps) {
       // Group by day
       const grouped = new Map<string, number>()
 
-      // Fill all days in the last 30 days
+      // Fill all days in the last 30 days using local timezone
       for (let i = 0; i < 30; i++) {
-        const date = new Date()
+        const date = new Date(today)
         date.setDate(date.getDate() - (29 - i))
-        const key = date.toISOString().split('T')[0]
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+        const key = `${year}-${month}-${day}`
         grouped.set(key, 0)
       }
 
       // Add activities
       for (const activity of activities) {
-        const date = new Date(activity.start_date)
-        const key = date.toISOString().split('T')[0]
-        const current = grouped.get(key) || 0
-        const distance = Number(activity.distance) / 1000 // Convert to km
-        grouped.set(key, current + distance)
+        // Parse date string directly to avoid timezone issues
+        // activity.start_date is in ISO format: "YYYY-MM-DDTHH:mm:ss.sssZ"
+        const dateStr = activity.start_date.split('T')[0] // Get just "YYYY-MM-DD"
+        const key = dateStr
+
+        // Only add activity if it's within our 30-day range
+        if (grouped.has(key)) {
+          const current = grouped.get(key) || 0
+          const distance = Number(activity.distance) / 1000 // Convert to km
+          grouped.set(key, current + distance)
+        }
       }
 
       // Convert to chart format
       const data = Array.from(grouped.entries()).map(([date, distance]) => {
-        const d = new Date(date)
+        // Parse YYYY-MM-DD without timezone conversion
+        const [year, month, day] = date.split('-').map(Number)
         return {
-          date: `${d.getDate()}/${d.getMonth() + 1}`,
+          date: `${day}/${month}`,
           distance: Number(distance.toFixed(1)),
         }
       })

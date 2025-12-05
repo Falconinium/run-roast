@@ -44,6 +44,9 @@ export default async function DashboardPage() {
     .neq('role', 'owner')
     .order('created_at', { ascending: false })
 
+  // Check if user has any challenges (owned or member)
+  const hasChallenges = (ownedChallenges && ownedChallenges.length > 0) || (memberChallenges && memberChallenges.length > 0)
+
   // Récupérer les 3 dernières activités de l'utilisateur si Strava est connecté
   let recentActivities: any[] = []
   if (stravaConnection) {
@@ -68,76 +71,78 @@ export default async function DashboardPage() {
       <Container className="py-8">
         <div className="space-y-8">
           {/* Header with gradient background */}
-          <div className="relative rounded-3xl bg-gradient-to-br from-orange-500 to-orange-600 p-8 shadow-xl overflow-hidden">
+          <div className="relative rounded-2xl sm:rounded-3xl bg-gradient-to-br from-orange-500 to-orange-600 p-6 sm:p-8 shadow-xl overflow-hidden">
             <div className="absolute inset-0 opacity-10">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
               <div className="absolute bottom-0 left-0 w-64 h-64 bg-white rounded-full blur-3xl"></div>
             </div>
             <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div>
-                <h1 className="text-3xl md:text-4xl font-bold text-white">
+              <div className="min-w-0">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-white">
                   Bienvenue, {profile.full_name || 'Athlète'} 👋
                 </h1>
-                <p className="text-orange-100 mt-2 flex items-center gap-2">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  {profile.email}
-                </p>
+                <div className="text-orange-100 mt-2 flex items-center gap-2 text-sm sm:text-base">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse flex-shrink-0"></div>
+                  <span className="truncate">{profile.email}</span>
+                </div>
               </div>
               {stravaConnection ? (
-                <Link href="/challenges/new">
-                  <div className="group relative">
-                    {/* Glow effect */}
-                    <div className="absolute -inset-1 bg-white rounded-2xl blur-lg opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="w-full md:w-auto flex-shrink-0">
+                  <Link href="/challenges/new" className="block relative">
+                    <div className="group relative isolate">
+                      {/* Glow effect - subtle if user already has challenges */}
+                      <div className={`absolute -inset-1 bg-white rounded-2xl blur-lg transition-opacity duration-300 pointer-events-none ${hasChallenges ? 'opacity-50 group-hover:opacity-100' : 'opacity-75 group-hover:opacity-100'}`}></div>
 
-                    {/* Button */}
-                    <div className="relative px-8 py-4 bg-white rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform group-hover:scale-105">
-                      <div className="flex items-center gap-3">
-                        {/* Icon with gradient background */}
-                        <div className="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center group-hover:rotate-90 transition-transform duration-300">
-                          <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      {/* Button */}
+                      <div className="relative px-6 sm:px-8 py-3 sm:py-4 bg-white rounded-xl shadow-2xl transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-[0_20px_60px_-15px_rgba(249,115,22,0.5)]">
+                        <div className="flex items-center justify-center md:justify-start gap-3">
+                          {/* Icon with gradient background */}
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white transition-transform duration-300 group-hover:rotate-90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                            </svg>
+                          </div>
+
+                          {/* Text */}
+                          <div className="flex flex-col">
+                            <span className="text-base sm:text-lg font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
+                              {hasChallenges ? 'Nouveau défi' : 'Créer un défi'}
+                            </span>
+                            <span className="text-xs text-gray-500 group-hover:text-orange-500 transition-colors hidden sm:block">
+                              {hasChallenges ? 'Créer un autre challenge' : 'Lancez un nouveau challenge'}
+                            </span>
+                          </div>
+
+                          {/* Arrow */}
+                          <svg className="w-5 h-5 text-orange-600 group-hover:translate-x-1 transition-transform duration-300 hidden sm:block" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
                           </svg>
                         </div>
-
-                        {/* Text */}
-                        <div className="flex flex-col">
-                          <span className="text-lg font-bold bg-gradient-to-r from-orange-600 to-orange-500 bg-clip-text text-transparent">
-                            Créer un défi
-                          </span>
-                          <span className="text-xs text-gray-500 group-hover:text-orange-500 transition-colors">
-                            Lancez un nouveau challenge
-                          </span>
-                        </div>
-
-                        {/* Arrow */}
-                        <svg className="w-5 h-5 text-orange-600 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                        </svg>
                       </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                </div>
               ) : (
-                <div className="group relative" title="Connectez Strava pour créer des défis">
+                <div className="group relative w-full md:w-auto" title="Connectez Strava pour créer des défis">
                   {/* Disabled glow effect */}
                   <div className="absolute -inset-1 bg-gray-200 rounded-2xl blur-lg opacity-50"></div>
 
                   {/* Disabled Button */}
-                  <div className="relative px-8 py-4 bg-gray-100 rounded-xl shadow-lg opacity-60 cursor-not-allowed">
-                    <div className="flex items-center gap-3">
+                  <div className="relative px-6 sm:px-8 py-3 sm:py-4 bg-gray-100 rounded-xl shadow-lg opacity-60 cursor-not-allowed">
+                    <div className="flex items-center justify-center md:justify-start gap-3">
                       {/* Icon with gray background */}
-                      <div className="w-10 h-10 bg-gradient-to-br from-gray-400 to-gray-500 rounded-lg flex items-center justify-center">
-                        <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-gray-400 to-gray-500 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg className="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                         </svg>
                       </div>
 
                       {/* Text */}
                       <div className="flex flex-col">
-                        <span className="text-lg font-bold text-gray-500">
+                        <span className="text-base sm:text-lg font-bold text-gray-500">
                           Créer un défi
                         </span>
-                        <span className="text-xs text-gray-400">
+                        <span className="text-xs text-gray-400 hidden sm:block">
                           Connectez Strava d'abord
                         </span>
                       </div>
@@ -147,80 +152,6 @@ export default async function DashboardPage() {
               )}
             </div>
           </div>
-
-          {/* Stats en temps réel */}
-          {stravaConnection && (
-            <div>
-              <div className="mb-6">
-                <div className="inline-block mb-2">
-                  <span className="px-4 py-2 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 rounded-full text-sm font-semibold">
-                    📊 Performance
-                  </span>
-                </div>
-                <h2 className="text-3xl font-bold text-gray-900">Vos statistiques</h2>
-              </div>
-              <UserStats userId={profile.id} />
-            </div>
-          )}
-
-          {/* Statut de connexion Strava */}
-          <Card className="border-2 hover:border-orange-200 transition-all duration-300 hover:shadow-xl">
-            <CardHeader>
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg">
-                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                    <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
-                  </svg>
-                </div>
-                <CardTitle className="text-xl">Connexion Strava</CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <StravaConnectionStatus stravaConnection={stravaConnection} />
-              {stravaConnection && (
-                <div className="mt-4">
-                  <SyncActivitiesButton />
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Graph de progression + Activités récentes */}
-          {stravaConnection && recentActivities.length > 0 && (
-            <div className="grid md:grid-cols-2 gap-8">
-              <Card className="border-2 hover:border-purple-200 transition-all duration-300 hover:shadow-xl group">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                      </svg>
-                    </div>
-                    <CardTitle className="text-xl group-hover:text-purple-600 transition-colors">Progression (30 derniers jours)</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ActivityChart userId={profile.id} />
-                </CardContent>
-              </Card>
-
-              <Card className="border-2 hover:border-green-200 transition-all duration-300 hover:shadow-xl group">
-                <CardHeader>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                      </svg>
-                    </div>
-                    <CardTitle className="text-xl group-hover:text-green-600 transition-colors">Dernières activités</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <RecentActivities activities={recentActivities} />
-                </CardContent>
-              </Card>
-            </div>
-          )}
 
           {/* Mes défis */}
           <div>
@@ -236,32 +167,66 @@ export default async function DashboardPage() {
               <div className="grid md:grid-cols-2 gap-6">
                 {ownedChallenges.map((challenge) => (
                   stravaConnection ? (
-                    <Link key={challenge.id} href={`/challenges/${challenge.id}`}>
-                      <Card className="group hover:shadow-2xl transition-all duration-300 cursor-pointer border-2 hover:border-orange-300 hover:scale-[1.02] overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-orange-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <CardHeader className="relative">
-                          <CardTitle className="text-xl group-hover:text-orange-600 transition-colors">{challenge.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="relative">
-                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                            {challenge.description}
-                          </p>
-                          <div className="flex items-center gap-3 text-sm mb-4">
-                            <span className="px-3 py-1.5 bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 rounded-lg font-semibold">
+                    <Link key={challenge.id} href={`/challenges/${challenge.id}`} className="block relative group">
+                      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white via-orange-50/30 to-white border border-gray-200 transition-all duration-300 hover:shadow-2xl hover:border-orange-300 hover:-translate-y-1">
+                        {/* Decorative gradient overlay */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-orange-400/20 to-transparent rounded-bl-[100px] pointer-events-none"></div>
+
+                        {/* Content */}
+                        <div className="relative p-6">
+                          {/* Title with icon */}
+                          <div className="flex items-start justify-between mb-4">
+                            <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-600 transition-colors pr-8 line-clamp-2">
+                              {challenge.title}
+                            </h3>
+                            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
+                            </div>
+                          </div>
+
+                          {/* Description */}
+                          {challenge.description && (
+                            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                              {challenge.description}
+                            </p>
+                          )}
+
+                          {/* Tags */}
+                          <div className="flex items-center gap-2 mb-4">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 rounded-full text-xs font-semibold">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
                               {challenge.sport}
                             </span>
-                            <span className="px-3 py-1.5 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 rounded-lg font-semibold">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 rounded-full text-xs font-semibold">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                              </svg>
                               {challenge.metric}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                          {/* Date with icon */}
+                          <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 rounded-lg px-3 py-2">
+                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            {format(new Date(challenge.start_date), 'dd MMM', { locale: fr })} - {format(new Date(challenge.end_date), 'dd MMM yyyy', { locale: fr })}
+                            <span className="font-medium">
+                              {format(new Date(challenge.start_date), 'dd MMM', { locale: fr })} - {format(new Date(challenge.end_date), 'dd MMM yyyy', { locale: fr })}
+                            </span>
                           </div>
-                        </CardContent>
-                      </Card>
+
+                          {/* Arrow indicator */}
+                          <div className="absolute bottom-6 right-6 w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
+                            <svg className="w-4 h-4 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
                     </Link>
                   ) : (
                     <div key={challenge.id} className="relative" title="Connectez Strava pour accéder à ce défi">
@@ -339,6 +304,80 @@ export default async function DashboardPage() {
             )}
           </div>
 
+          {/* Stats en temps réel */}
+          {stravaConnection && (
+            <div>
+              <div className="mb-6">
+                <div className="inline-block mb-2">
+                  <span className="px-4 py-2 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 rounded-full text-sm font-semibold">
+                    📊 Performance
+                  </span>
+                </div>
+                <h2 className="text-3xl font-bold text-gray-900">Vos statistiques</h2>
+              </div>
+              <UserStats userId={profile.id} />
+            </div>
+          )}
+
+          {/* Statut de connexion Strava */}
+          <Card className="border-2 hover:border-orange-200 transition-all duration-300 hover:shadow-xl cursor-default">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-lg">
+                  <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.15-10.172h-3.066m-7.008-5.599l2.836 5.598h4.172L10.463 0l-7 13.828h4.169" />
+                  </svg>
+                </div>
+                <CardTitle className="text-xl">Connexion Strava</CardTitle>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <StravaConnectionStatus stravaConnection={stravaConnection} />
+              {stravaConnection && (
+                <div className="mt-4">
+                  <SyncActivitiesButton />
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Graph de progression + Activités récentes */}
+          {stravaConnection && recentActivities.length > 0 && (
+            <div className="grid md:grid-cols-2 gap-8">
+              <Card className="border-2 hover:border-purple-200 transition-all duration-300 hover:shadow-xl group cursor-default">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                      </svg>
+                    </div>
+                    <CardTitle className="text-xl group-hover:text-purple-600 transition-colors">Progression (30 derniers jours)</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ActivityChart userId={profile.id} />
+                </CardContent>
+              </Card>
+
+              <Card className="border-2 hover:border-green-200 transition-all duration-300 hover:shadow-xl group cursor-default">
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <CardTitle className="text-xl group-hover:text-green-600 transition-colors">Dernières activités</CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <RecentActivities activities={recentActivities} />
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
           {/* Achievements et niveaux */}
           {stravaConnection && (
             <div>
@@ -371,32 +410,66 @@ export default async function DashboardPage() {
                   if (!challenge) return null
 
                   return stravaConnection ? (
-                    <Link key={member.id} href={`/challenges/${challenge.id}`}>
-                      <Card className="group hover:shadow-2xl transition-all duration-300 cursor-pointer border-2 hover:border-green-300 hover:scale-[1.02] overflow-hidden">
-                        <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-white opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                        <CardHeader className="relative">
-                          <CardTitle className="text-xl group-hover:text-green-600 transition-colors">{challenge.title}</CardTitle>
-                        </CardHeader>
-                        <CardContent className="relative">
-                          <p className="text-sm text-gray-600 mb-4 line-clamp-2">
-                            {challenge.description}
-                          </p>
-                          <div className="flex items-center gap-3 text-sm mb-4">
-                            <span className="px-3 py-1.5 bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 rounded-lg font-semibold">
+                    <Link key={member.id} href={`/challenges/${challenge.id}`} className="block relative group">
+                      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-white via-green-50/30 to-white border border-gray-200 transition-all duration-300 hover:shadow-2xl hover:border-green-300 hover:-translate-y-1">
+                        {/* Decorative gradient overlay */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-400/20 to-transparent rounded-bl-[100px] pointer-events-none"></div>
+
+                        {/* Content */}
+                        <div className="relative p-6">
+                          {/* Title with icon */}
+                          <div className="flex items-start justify-between mb-4">
+                            <h3 className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors pr-8 line-clamp-2">
+                              {challenge.title}
+                            </h3>
+                            <div className="flex-shrink-0 w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                              <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                              </svg>
+                            </div>
+                          </div>
+
+                          {/* Description */}
+                          {challenge.description && (
+                            <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                              {challenge.description}
+                            </p>
+                          )}
+
+                          {/* Tags */}
+                          <div className="flex items-center gap-2 mb-4">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-100 to-orange-200 text-orange-700 rounded-full text-xs font-semibold">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                              </svg>
                               {challenge.sport}
                             </span>
-                            <span className="px-3 py-1.5 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 rounded-lg font-semibold">
+                            <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-700 rounded-full text-xs font-semibold">
+                              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                              </svg>
                               {challenge.metric}
                             </span>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+
+                          {/* Date with icon */}
+                          <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 rounded-lg px-3 py-2">
+                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                             </svg>
-                            {format(new Date(challenge.start_date), 'dd MMM', { locale: fr })} - {format(new Date(challenge.end_date), 'dd MMM yyyy', { locale: fr })}
+                            <span className="font-medium">
+                              {format(new Date(challenge.start_date), 'dd MMM', { locale: fr })} - {format(new Date(challenge.end_date), 'dd MMM yyyy', { locale: fr })}
+                            </span>
                           </div>
-                        </CardContent>
-                      </Card>
+
+                          {/* Arrow indicator */}
+                          <div className="absolute bottom-6 right-6 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1">
+                            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
                     </Link>
                   ) : (
                     <div key={member.id} className="relative" title="Connectez Strava pour accéder à ce défi">

@@ -103,83 +103,98 @@ export async function UserStats({ userId }: UserStatsProps) {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
       {/* Total Distance */}
-      <Card className="group hover:shadow-lg transition-shadow">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-2 bg-orange-100 rounded-lg group-hover:scale-110 transition-transform">
-              <svg className="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-              </svg>
+      <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-orange-50 to-orange-100 p-4 transition-all hover:shadow-md cursor-default">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-orange-500 flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <span className="text-xs font-medium text-orange-700">Distance</span>
             </div>
+            <div className="text-2xl sm:text-3xl font-bold text-orange-900 mb-1">{formatDistance(totalDistance)}</div>
+            <div className="text-xs text-orange-600">kilomètres</div>
+            {monthDistance > 0 && (
+              <div className="mt-2 text-xs text-orange-700 font-medium">
+                +{formatDistance(monthDistance)} km ce mois
+              </div>
+            )}
           </div>
-          <div className="text-2xl font-bold text-gray-900">{formatDistance(totalDistance)} km</div>
-          <div className="text-sm text-gray-600">Distance totale</div>
-          <div className="mt-2 text-xs text-green-600 font-semibold">
-            +{formatDistance(monthDistance)} km ce mois
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Total Activities */}
-      <Card className="group hover:shadow-lg transition-shadow">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-2 bg-blue-100 rounded-lg group-hover:scale-110 transition-transform">
-              <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-              </svg>
+      <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-blue-50 to-blue-100 p-4 transition-all hover:shadow-md cursor-default">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <span className="text-xs font-medium text-blue-700">Activités</span>
             </div>
+            <div className="text-2xl sm:text-3xl font-bold text-blue-900 mb-1">{totalActivities}</div>
+            <div className="text-xs text-blue-600">au total</div>
+            {monthActivitiesCount > 0 && (
+              <div className="mt-2 text-xs text-blue-700 font-medium">
+                +{monthActivitiesCount} ce mois
+              </div>
+            )}
           </div>
-          <div className="text-2xl font-bold text-gray-900">{totalActivities}</div>
-          <div className="text-sm text-gray-600">Activités totales</div>
-          <div className="mt-2 text-xs text-green-600 font-semibold">
-            +{monthActivitiesCount} ce mois
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Total Time */}
-      <Card className="group hover:shadow-lg transition-shadow">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-2 bg-purple-100 rounded-lg group-hover:scale-110 transition-transform">
-              <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+      <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-purple-50 to-purple-100 p-4 transition-all hover:shadow-md cursor-default">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-purple-500 flex items-center justify-center">
+                <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <span className="text-xs font-medium text-purple-700">Temps</span>
             </div>
+            <div className="text-2xl sm:text-3xl font-bold text-purple-900 mb-1">{formatTime(totalTime)}h</div>
+            <div className="text-xs text-purple-600">d'effort</div>
+            {totalElevation > 0 && (
+              <div className="mt-2 text-xs text-purple-700 font-medium">
+                {Math.round(totalElevation)}m D+
+              </div>
+            )}
           </div>
-          <div className="text-2xl font-bold text-gray-900">{formatTime(totalTime)}h</div>
-          <div className="text-sm text-gray-600">Temps total</div>
-          <div className="mt-2 text-xs text-gray-500">
-            {totalElevation > 0 && `${Math.round(totalElevation)}m D+`}
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
       {/* Podiums */}
-      <Card className="group hover:shadow-lg transition-shadow">
-        <CardContent className="p-6">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-2 bg-yellow-100 rounded-lg group-hover:scale-110 transition-transform">
-              <svg className="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
+      <div className="group relative overflow-hidden rounded-xl bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 transition-all hover:shadow-md cursor-default">
+        <div className="flex items-start justify-between">
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-2">
+              <div className="w-8 h-8 rounded-lg bg-yellow-500 flex items-center justify-center">
+                <span className="text-lg">{first > 0 ? '🥇' : first + second + third > 0 ? '🏆' : '🎯'}</span>
+              </div>
+              <span className="text-xs font-medium text-yellow-700">Podiums</span>
             </div>
+            <div className="text-2xl sm:text-3xl font-bold text-yellow-900 mb-1">{first + second + third}</div>
+            <div className="text-xs text-yellow-600">au total</div>
+            {(first > 0 || second > 0 || third > 0) && (
+              <div className="mt-2 flex gap-2 text-xs font-medium text-yellow-700">
+                {first > 0 && <span>🥇{first}</span>}
+                {second > 0 && <span>🥈{second}</span>}
+                {third > 0 && <span>🥉{third}</span>}
+              </div>
+            )}
           </div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-2xl">{first > 0 ? '🥇' : first + second + third > 0 ? '🏆' : '🎯'}</span>
-            <div className="text-2xl font-bold text-gray-900">{first + second + third}</div>
-          </div>
-          <div className="text-sm text-gray-600">Podiums</div>
-          <div className="mt-2 flex gap-2 text-xs">
-            {first > 0 && <span>🥇 {first}</span>}
-            {second > 0 && <span>🥈 {second}</span>}
-            {third > 0 && <span>🥉 {third}</span>}
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   )
 }

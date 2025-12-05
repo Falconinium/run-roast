@@ -139,14 +139,14 @@ export function DatePicker({ label, value, onChange, required, minDate, maxDate 
         <button
           type="button"
           onClick={() => setIsOpen(!isOpen)}
-          className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-left bg-white hover:border-orange-300 transition-all duration-200 group"
+          className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent text-left bg-white hover:border-orange-300 transition-all duration-200 group"
         >
-          <div className="flex items-center justify-between">
-            <span className={selectedDate ? 'text-gray-900' : 'text-gray-400'}>
+          <div className="flex items-center justify-between gap-2">
+            <span className={`text-sm sm:text-base truncate ${selectedDate ? 'text-gray-900' : 'text-gray-400'}`}>
               {selectedDate ? formatDate(selectedDate) : 'Sélectionner une date'}
             </span>
             <svg
-              className={`w-5 h-5 text-gray-400 group-hover:text-orange-500 transition-all duration-200 ${
+              className={`w-5 h-5 text-gray-400 group-hover:text-orange-500 transition-all duration-200 flex-shrink-0 ${
                 isOpen ? 'rotate-180' : ''
               }`}
               fill="none"
@@ -165,45 +165,45 @@ export function DatePicker({ label, value, onChange, required, minDate, maxDate 
 
         {/* Calendar dropdown */}
         {isOpen && (
-          <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-2xl border-2 border-gray-100 p-4 animate-in fade-in slide-in-from-top-2 duration-200">
+          <div className="absolute z-50 mt-2 w-full bg-white rounded-2xl shadow-2xl border-2 border-gray-100 p-3 sm:p-4 animate-in fade-in slide-in-from-top-2 duration-200">
             {/* Month navigation */}
             <div className="flex items-center justify-between mb-4">
               <button
                 type="button"
                 onClick={previousMonth}
-                className="p-2 rounded-lg hover:bg-orange-50 text-gray-600 hover:text-orange-600 transition-colors"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-orange-50 text-gray-600 hover:text-orange-600 transition-colors"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
 
-              <h3 className="text-lg font-bold text-gray-900">
+              <h3 className="text-base sm:text-lg font-bold text-gray-900">
                 {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
               </h3>
 
               <button
                 type="button"
                 onClick={nextMonth}
-                className="p-2 rounded-lg hover:bg-orange-50 text-gray-600 hover:text-orange-600 transition-colors"
+                className="p-1.5 sm:p-2 rounded-lg hover:bg-orange-50 text-gray-600 hover:text-orange-600 transition-colors"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
             </div>
 
             {/* Day names */}
-            <div className="grid grid-cols-7 gap-1 mb-2">
+            <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-2">
               {dayNames.map((day) => (
-                <div key={day} className="text-center text-xs font-semibold text-gray-500 py-2">
+                <div key={day} className="text-center text-[10px] sm:text-xs font-semibold text-gray-500 py-1 sm:py-2">
                   {day}
                 </div>
               ))}
             </div>
 
             {/* Days grid */}
-            <div className="grid grid-cols-7 gap-1">
+            <div className="grid grid-cols-7 gap-0.5 sm:gap-1">
               {getDaysInMonth(currentMonth).map((day, index) => {
                 if (day === null) {
                   return <div key={`empty-${index}`} className="aspect-square" />
@@ -221,7 +221,7 @@ export function DatePicker({ label, value, onChange, required, minDate, maxDate 
                     onClick={() => handleDateClick(day)}
                     disabled={disabled}
                     className={`
-                      aspect-square rounded-lg text-sm font-medium transition-all duration-200
+                      aspect-square rounded-lg text-xs sm:text-sm font-medium transition-all duration-200
                       ${
                         selected
                           ? 'bg-gradient-to-br from-orange-500 to-orange-600 text-white shadow-lg scale-105'
@@ -241,7 +241,7 @@ export function DatePicker({ label, value, onChange, required, minDate, maxDate 
             </div>
 
             {/* Quick actions */}
-            <div className="mt-4 pt-4 border-t border-gray-100 flex gap-2">
+            <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100 flex gap-2">
               <button
                 type="button"
                 onClick={() => {
@@ -251,14 +251,14 @@ export function DatePicker({ label, value, onChange, required, minDate, maxDate 
                     setIsOpen(false)
                   }
                 }}
-                className="flex-1 px-4 py-2 text-sm font-medium text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                className="flex-1 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
               >
                 Aujourd'hui
               </button>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                className="px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
               >
                 Fermer
               </button>

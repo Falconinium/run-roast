@@ -6,6 +6,7 @@ import {
   isTokenExpired,
   normalizeStravaType,
 } from '@/lib/strava'
+import { updateUserAchievements } from '@/lib/actions/achievements'
 
 /**
  * Route API pour synchroniser les activités Strava
@@ -165,6 +166,17 @@ export async function POST() {
     }
 
     const totalProcessed = successCount + updatedCount
+
+    // Update user achievements after syncing activities
+    if (totalProcessed > 0) {
+      try {
+        await updateUserAchievements(user.id)
+      } catch (achievementError) {
+        console.error('Error updating achievements:', achievementError)
+        // Don't fail the sync if achievements update fails
+      }
+    }
+
     return NextResponse.json({
       success: true,
       count: totalProcessed,

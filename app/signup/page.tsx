@@ -71,12 +71,12 @@ export default function SignupPage() {
   }
 
   return (
-    <Container maxWidth="sm" className="py-12">
-      <Card>
-        <CardHeader>
-          <CardTitle>Créer un compte</CardTitle>
+    <Container maxWidth="sm" className="py-8 sm:py-12">
+      <Card className="mx-4 sm:mx-0">
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="text-xl sm:text-2xl">Créer un compte</CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-4 sm:p-6">
           <form onSubmit={handleSignup} className="space-y-4">
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">

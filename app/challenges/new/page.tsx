@@ -93,8 +93,9 @@ export default function NewChallengePage() {
         console.error('Error adding owner as member:', memberError)
       }
 
-      // Rediriger vers la page du défi
+      // Rediriger vers la page du défi créé
       router.push(`/challenges/${challenge.id}`)
+      router.refresh()
     } catch (err) {
       console.error('Error creating challenge:', err)
       setError('Une erreur est survenue lors de la création du défi')
@@ -104,10 +105,10 @@ export default function NewChallengePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50/30 via-white to-blue-50/30 py-8">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50/30 via-white to-blue-50/30 py-4 sm:py-8">
       <Container maxWidth="md">
         {/* Header with back button */}
-        <div className="mb-6">
+        <div className="mb-4 sm:mb-6 px-4 sm:px-0">
           <button
             type="button"
             onClick={() => router.back()}
@@ -120,22 +121,22 @@ export default function NewChallengePage() {
           </button>
         </div>
 
-        <Card className="border-2 hover:shadow-xl transition-all duration-300">
-          <CardHeader className="bg-gradient-to-r from-orange-50 to-blue-50 border-b-2 border-gray-100">
+        <Card className="border-2 hover:shadow-xl transition-all duration-300 mx-4 sm:mx-0">
+          <CardHeader className="bg-gradient-to-r from-orange-50 to-blue-50 border-b-2 border-gray-100 p-4 sm:p-6">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg">
-                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl flex items-center justify-center shadow-lg flex-shrink-0">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
                 </svg>
               </div>
-              <div>
-                <CardTitle className="text-2xl">Créer un nouveau défi</CardTitle>
-                <p className="text-sm text-gray-600 mt-1">Lancez un challenge pour vos amis</p>
+              <div className="min-w-0">
+                <CardTitle className="text-xl sm:text-2xl">Créer un nouveau défi</CardTitle>
+                <p className="text-xs sm:text-sm text-gray-600 mt-1">Lancez un challenge pour vos amis</p>
               </div>
             </div>
           </CardHeader>
-          <CardContent className="p-8">
-            <form onSubmit={handleSubmit} className="space-y-6">
+          <CardContent className="p-4 sm:p-6 md:p-8">
+            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
             {error && (
               <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
                 {error}
