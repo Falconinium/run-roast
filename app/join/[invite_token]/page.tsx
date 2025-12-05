@@ -21,14 +21,20 @@ export default async function JoinPage({ params }: JoinPageProps) {
 
   const supabase = await createClient()
 
+  console.log('Looking for challenge with invite_token:', invite_token)
+
   // Récupérer le défi via le token d'invitation
-  const { data: challenge, error: challengeError } = await supabase
+  // Les challenges unlisted sont maintenant visibles grâce à la politique RLS
+  const { data: rawChallenge, error: challengeError } = await supabase
     .from('challenges')
-    .select('*, profiles(*)')
+    .select('*, profiles!inner(*)')
     .eq('invite_token', invite_token)
     .single()
 
-  if (challengeError || !challenge) {
+  console.log('Challenge query result:', { rawChallenge, challengeError })
+
+  if (challengeError || !rawChallenge) {
+    console.error('Challenge error:', challengeError)
     return (
       <Container maxWidth="md" className="py-12">
         <Card>
@@ -36,13 +42,25 @@ export default async function JoinPage({ params }: JoinPageProps) {
             <CardTitle>Défi introuvable</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600">
+            <p className="text-gray-600 mb-4">
               Ce lien d'invitation n'est pas valide ou a expiré.
             </p>
+            <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded">
+              <p><strong>Token:</strong> {invite_token}</p>
+              {challengeError && (
+                <p className="mt-2"><strong>Erreur:</strong> {challengeError.message}</p>
+              )}
+            </div>
           </CardContent>
         </Card>
       </Container>
     )
+  }
+
+  // Transformer profiles en objet si c'est un tableau
+  const challenge = {
+    ...rawChallenge,
+    profiles: Array.isArray(rawChallenge.profiles) ? rawChallenge.profiles[0] : rawChallenge.profiles
   }
 
   // Vérifier si l'utilisateur est déjà membre

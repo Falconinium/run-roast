@@ -11,7 +11,9 @@ interface InviteLinkSectionProps {
 export function InviteLinkSection({ inviteToken }: InviteLinkSectionProps) {
   const [copied, setCopied] = useState(false)
 
-  const inviteUrl = `${process.env.NEXT_PUBLIC_APP_URL}/join/${inviteToken}`
+  // Enlever le slash final de l'URL de base si présent
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL?.replace(/\/$/, '') || ''
+  const inviteUrl = `${baseUrl}/join/${inviteToken}`
 
   const handleCopy = async () => {
     try {
